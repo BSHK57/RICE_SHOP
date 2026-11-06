@@ -1,0 +1,22 @@
+{#- Inventory tab partial. static/js/tabs/inventory.js builds the table and the edit dialogs. -#}
+<section id="tab-inventory" data-tab-panel="inventory" class="hidden">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-semibold text-stone-900">Inventory</h2>
+      <p class="text-sm text-stone-500">Retail stock by rice type. Wholesale sales never change this stock.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <label data-role="inactive-wrap" class="hidden items-center gap-2 text-sm text-stone-600">
+        <input data-role="inactive" type="checkbox" class="h-4 w-4 rounded border-stone-300 text-primary-600 focus:ring-primary-500"> Show inactive
+      </label>
+      <button type="button" data-role="add" class="hidden min-h-[2.75rem] items-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+        <span data-icon="plus" data-icon-class="h-4 w-4"></span>Add rice type
+      </button>
+    </div>
+  </div>
+  <p class="mb-4 flex items-start gap-2 rounded-lg bg-accent-50 px-4 py-3 text-sm text-accent-900">
+    <span data-icon="info" data-icon-class="mt-0.5 h-4 w-4 shrink-0"></span>
+    <span>Loose rice that adds up to a full bag is sold as a bag, and when loose rice runs out a bag is opened automatically.</span>
+  </p>
+  <div data-role="list" aria-live="polite"></div>
+</section>

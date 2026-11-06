@@ -1,0 +1,13 @@
+{#- Dashboard tab partial. static/js/tabs/dashboard.js fills [data-role=content]. -#}
+<section id="tab-dashboard" data-tab-panel="dashboard" class="hidden">
+  <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h2 data-role="greeting" class="text-xl font-semibold text-stone-900 sm:text-2xl"></h2>
+      <p data-role="today" class="text-sm text-stone-500"></p>
+    </div>
+    <button type="button" data-role="refresh" class="inline-flex min-h-[2.75rem] items-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 shadow-sm transition hover:bg-stone-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500">
+      <span data-icon="refresh" data-icon-class="h-4 w-4"></span>Refresh
+    </button>
+  </div>
+  <div data-role="content" class="space-y-6" aria-live="polite"></div>
+</section>

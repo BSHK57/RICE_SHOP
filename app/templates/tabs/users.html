@@ -1,0 +1,17 @@
+{#- Users tab partial (admin only). static/js/tabs/users.js builds everything. -#}
+<section id="tab-users" data-tab-panel="users" class="hidden">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-semibold text-stone-900">Users</h2>
+      <p class="text-sm text-stone-500">Choose who can sign in and which sections and actions they get.</p>
+    </div>
+    <button type="button" data-role="add" class="inline-flex min-h-[2.75rem] items-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+      <span data-icon="plus" data-icon-class="h-4 w-4"></span>New user
+    </button>
+  </div>
+  <p class="mb-4 flex items-start gap-2 rounded-lg bg-stone-100 px-4 py-3 text-sm text-stone-600">
+    <span data-icon="lock" data-icon-class="mt-0.5 h-4 w-4 shrink-0"></span>
+    <span>The three built-in accounts (Admin, Anand, Staff) are fixed in the application and cannot be edited here. Create a new user to give someone a custom set of permissions.</span>
+  </p>
+  <div data-role="list" aria-live="polite"></div>
+</section>

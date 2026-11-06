@@ -1,0 +1,88 @@
+/*
+ * app.css - small additions on top of Tailwind (CDN): scrollbars, number helper, nav states,
+ * animations (tab fade, modal/drawer/toast), skeleton shimmer, focus ring and print rules.
+ */
+
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif; }
+
+/* numbers line up in columns */
+.num { font-variant-numeric: tabular-nums; letter-spacing: -0.005em; }
+
+/* slim scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #d6d3d1 transparent; }
+*::-webkit-scrollbar { height: 8px; width: 8px; }
+*::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 8px; }
+*::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* keyboard focus ring everywhere (Tailwind's preflight removes it from some elements) */
+:focus-visible { outline: 2px solid #10b981; outline-offset: 2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; }
+
+button, [role="button"], select { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+/* tab content fade-in */
+.tab-panel { animation: fadeUp .22s ease-out both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* sidebar + bottom navigation states (set via aria-current="page" by app.js) */
+.nav-item { color: #57534e; }
+.nav-item:hover { background: #f5f5f4; color: #1c1917; }
+.nav-item[aria-current="page"] { background: #ecfdf5; color: #047857; font-weight: 600; box-shadow: inset 3px 0 0 #10b981; }
+.bnav-item { color: #78716c; }
+.bnav-item[aria-current="page"] { color: #047857; font-weight: 600; }
+.bnav-item[aria-current="page"] .bnav-ico { background: #d1fae5; }
+
+/* modal / drawer / toast animations */
+.anim-fade { animation: fadeIn .15s ease-out both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.anim-modal { animation: sheetUp .22s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes sheetUp { from { opacity: .6; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) {
+  .anim-modal { animation: popIn .16s ease-out both; }
+}
+@keyframes popIn { from { opacity: 0; transform: scale(.97) translateY(6px); } to { opacity: 1; transform: none; } }
+.anim-drawer-right { animation: slideRight .22s cubic-bezier(.2,.8,.2,1) both; }
+.anim-drawer-left { animation: slideLeft .22s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes slideRight { from { transform: translateX(40px); opacity: .5; } to { transform: none; opacity: 1; } }
+@keyframes slideLeft { from { transform: translateX(-40px); opacity: .5; } to { transform: none; opacity: 1; } }
+
+#toast-root {
+  position: fixed; z-index: 100; left: 0; right: 0; top: .75rem; display: flex; flex-direction: column;
+  align-items: center; gap: .5rem; padding: 0 1rem; pointer-events: none;
+}
+@media (min-width: 640px) { #toast-root { left: auto; right: 1rem; top: 1rem; align-items: flex-end; } }
+.toast { animation: toastIn .2s ease-out both; cursor: pointer; }
+.toast-out { animation: toastOut .18s ease-in both; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-6px); } }
+
+body.modal-open { overflow: hidden; }
+
+/* skeleton shimmer: <div class="skeleton h-4 w-32 rounded"></div> */
+.skeleton {
+  background: linear-gradient(90deg, #f5f5f4 25%, #e7e5e4 37%, #f5f5f4 63%);
+  background-size: 400% 100%; animation: shimmer 1.3s ease infinite; border-radius: .5rem;
+}
+@keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+/* iOS safe areas for the bottom navigation */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* print: only the content */
+@media print {
+  .no-print, #sidebar, #topbar, #bottom-nav, #toast-root, #modal-root, #drawer-root { display: none !important; }
+  body { background: #fff !important; }
+  #page-wrap { padding-left: 0 !important; }
+  #main { padding: 0 !important; max-width: none !important; }
+  .tab-panel { animation: none !important; }
+  table { font-size: 11px; }
+  .shadow-sm, .shadow, .shadow-lg { box-shadow: none !important; }
+}

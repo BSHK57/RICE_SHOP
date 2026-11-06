@@ -1,0 +1,96 @@
+<!doctype html>
+{#- App shell (DESIGN section 6.1). Desktop: left sidebar. Mobile: compact top bar + scrollable bottom nav. -#}
+{%- set role_labels = {'admin': 'Admin', 'super': 'Super user', 'staff': 'Staff'} -%}
+{%- set role_label = role_labels.get(user.role, 'Custom') -%}
+{%- set tabs_min = [] -%}
+{%- for t in tabs %}{% set _ = tabs_min.append({'id': t.id, 'label': t.label, 'icon': t.icon}) %}{% endfor -%}
+<html lang="en">
+<head>
+  {% include '_head.html' %}
+  <title>Rice Shop Manager</title>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased">
+<noscript><p class="p-6 text-center text-red-700">Please turn on JavaScript to use Rice Shop Manager.</p></noscript>
+<script>
+  window.APP = {{ {'user': {'username': user.username, 'display_name': user.display_name, 'role': user.role, 'permissions': user.permissions | sort | list}, 'tabs': tabs_min, 'csrf': csrf} | tojson }};
+</script>
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[200] focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:shadow">Skip to content</a>
+
+<!-- Sidebar (desktop) -->
+<aside id="sidebar" class="no-print fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-stone-200 bg-white lg:flex">
+  <div class="flex items-center gap-3 px-5 py-5">
+    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600 text-white shadow-sm"><span data-icon="wheat" data-icon-class="h-6 w-6"></span></span>
+    <div class="leading-tight">
+      <p class="text-base font-semibold text-stone-900">Rice Shop Manager</p>
+      <p class="text-xs text-stone-500">Retail &amp; wholesale</p>
+    </div>
+  </div>
+  <nav class="flex-1 space-y-1 overflow-y-auto px-3 pb-4" aria-label="Sections">
+    {% for t in tabs %}
+    <button type="button" data-tab-btn="{{ t.id }}" class="nav-item flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500">
+      <span data-icon="{{ t.icon }}" data-icon-class="h-5 w-5 shrink-0"></span><span>{{ t.label }}</span>
+    </button>
+    {% endfor %}
+  </nav>
+  <div class="border-t border-stone-100 px-5 py-3 text-xs text-stone-400">Signed in as {{ user.username }}</div>
+</aside>
+
+<div id="page-wrap" class="flex min-h-screen min-w-0 flex-col lg:pl-64">
+  <!-- Top bar -->
+  <header id="topbar" class="no-print sticky top-0 z-20 border-b border-stone-200 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
+      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-white lg:hidden"><span data-icon="wheat" data-icon-class="h-5 w-5"></span></span>
+      <div class="min-w-0 flex-1 leading-tight">
+        <p class="truncate text-sm font-semibold text-stone-900 lg:hidden">Rice Shop Manager</p>
+        <h1 id="page-title" class="truncate text-xs text-stone-500 lg:text-lg lg:font-semibold lg:text-stone-900"></h1>
+      </div>
+      {% if has_bell %}
+      <button type="button" id="bell-btn" class="relative rounded-lg p-2.5 text-stone-600 transition hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500" aria-label="Pending deliveries and reminders" title="Pending deliveries">
+        <span data-icon="bell" data-icon-class="h-5 w-5"></span>
+        <span id="bell-badge" class="absolute -right-0.5 -top-0.5 hidden min-w-[1.25rem] rounded-full px-1 text-center text-[11px] font-semibold leading-5 text-white" aria-live="polite"></span>
+      </button>
+      {% endif %}
+      <div class="hidden min-w-0 items-center gap-2 text-right sm:flex">
+        <span class="truncate text-sm font-medium text-stone-800">{{ user.display_name }}</span>
+        <span class="rounded-full bg-accent-100 px-2 py-0.5 text-xs font-medium text-accent-800">{{ role_label }}</span>
+      </div>
+      <button type="button" id="logout-btn" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:opacity-50" aria-label="Log out" title="Log out">
+        <span data-icon="logout" data-icon-class="h-5 w-5"></span><span class="hidden sm:inline">Log out</span>
+      </button>
+    </div>
+    <p class="border-t border-stone-100 px-4 py-1 text-xs text-stone-500 sm:hidden">{{ user.display_name }} · {{ role_label }}</p>
+  </header>
+
+  <!-- Content: one panel per permitted tab (templates/tabs/<id>.html) -->
+  <main id="main" class="mx-auto w-full max-w-7xl flex-1 px-4 py-5 pb-28 sm:px-6 lg:px-8 lg:pb-10">
+    {% for t in tabs %}{% include ['tabs/' ~ t.id ~ '.html', 'tabs/_missing.html'] %}{% endfor %}
+  </main>
+</div>
+
+<!-- Bottom navigation (mobile) -->
+<nav id="bottom-nav" class="no-print safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-white/95 backdrop-blur lg:hidden" aria-label="Sections">
+  <div class="no-scrollbar flex overflow-x-auto px-1">
+    {% for t in tabs %}
+    <button type="button" data-tab-btn="{{ t.id }}" class="bnav-item flex min-w-[4.75rem] flex-1 flex-col items-center gap-0.5 px-2 pb-1.5 pt-2 text-[11px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500">
+      <span class="bnav-ico flex h-7 w-12 items-center justify-center rounded-full transition"><span data-icon="{{ t.icon }}" data-icon-class="h-5 w-5"></span></span>
+      <span class="whitespace-nowrap">{{ t.label.replace(' Sales', '') }}</span>
+    </button>
+    {% endfor %}
+  </div>
+</nav>
+
+<div id="modal-root"></div>
+<div id="toast-root" aria-live="polite"></div>
+<div id="drawer-root"></div>
+
+<script src="{{ url_for('static', filename='js/core/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/core/ui.js') }}"></script>
+<script src="{{ url_for('static', filename='js/core/components.js') }}"></script>
+<script src="{{ url_for('static', filename='js/core/app.js') }}"></script>
+{% for f in shared_scripts %}<script src="{{ url_for('static', filename='js/shared/' ~ f) }}"></script>
+{% endfor %}{% if has_bell %}<script src="{{ url_for('static', filename='js/core/bell.js') }}"></script>
+{% endif %}{% for t in tabs %}<script src="{{ url_for('static', filename='js/tabs/' ~ t.id ~ '.js') }}"></script>
+{% endfor %}
+</body>
+</html>
